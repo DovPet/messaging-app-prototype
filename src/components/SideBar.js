@@ -11,17 +11,26 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CreateIcon from '@mui/icons-material/Create';
+import AddIcon from '@mui/icons-material/Add';
+import { useCollection } from "react-firebase-hooks/firestore"
 import SideBarOption from './SideBarOption'
+import { auth, db } from '../firebase'
+import { useAuthState } from 'react-firebase-hooks/auth';
 
-function SideBar() {
+function SideBar({ showSideBar, isMobile, setShowSideBar }) {
+
+    const [channels] = useCollection(db.collection('rooms'))
+    const [user] = useAuthState(auth)
+
     return (
-        <SideBarContainer>
+        <>
+        <SideBarContainer showSideBar={showSideBar}>
             <SideBarHeader>
                 <SideBarInfo>
-                    <h2>TITLE GOES HERE</h2>
+                    <h2>Prototype App</h2>
                     <h3>
                         <FiberManualRecordIcon />
-                        Username Here
+                        {user.displayName}
                     </h3>
                 </SideBarInfo>
                 <CreateIcon />
@@ -37,22 +46,43 @@ function SideBar() {
             <SideBarOption Icon={ExpandLessIcon} title="Show less"/>
 
             <hr />
-            <SideBarOption Icon={ExpandMoreIcon} title="Channels" addChannelOption/>
+            <SideBarOption Icon={ExpandMoreIcon} title="Channels"/>
             <hr />
 
+            <SideBarOption Icon={AddIcon} title="Add Channel" addChannelOption/>
+
+            {channels?.docs.map(doc => (
+                <SideBarOption 
+                    key={doc.id} 
+                    id={doc.id} 
+                    title={doc.data().name}
+                    isMobile={isMobile}
+                    setShowSideBar={setShowSideBar}
+                    />
+            ))}
+
         </SideBarContainer>
+        </>
     )
 }
 
 export default SideBar
 
 const SideBarContainer = styled.div`
+    @media (max-width: 500px) {
+       width: 100%;
+       flex: auto;
+       max-width: 100%;
+    }
+    visibility: ${(props) => props.showSideBar ? "visible" : "hidden"};
+    transform: ${(props) => props.showSideBar ? "translateX(0)" : "translateX(-100%)"};
     background-color: var(--slack-color);
     color: white;
     flex: 0.3;
     border-top: 1px solid #49274b;
     max-width: 260px;
     margin-top: 60px;
+    transition: ${(props) => props.showSideBar ? "transform 500ms" : "transform 500ms, visibility 0ms linear 500ms"};
 
     > hr {
         margin: 10px 0;

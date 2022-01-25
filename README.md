@@ -1,5 +1,11 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
+## What is this project for?
+
+This prototype was made, to see how firebase database and auth, hooks works, as long with redux and styled components.
+
+Working demo: https://messaging-prototype-e5840.web.app/
+
 ## Available Scripts
 
 In the project directory, you can run:

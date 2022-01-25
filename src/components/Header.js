@@ -4,13 +4,22 @@ import Avatar from '@mui/material/Avatar';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SearchIcon from '@mui/icons-material/Search';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
+import { auth } from '../firebase';
 
-function Header() {
+function Header({ showSideBar, setShowSideBar }) {
+    const [user] = useAuthState(auth)
     return (
         <HeaderContainer>
             <HeaderLeft>
-                <HeaderAvatar 
-
+            <MenuIcon onClick={() => {
+                setShowSideBar()
+            }}/>
+                <HeaderAvatar
+                    onClick={() => auth.signOut()}
+                    alt={user.displayName} 
+                    src={user?.photoURL}
                 />
                 <AccessTimeIcon />
             </HeaderLeft>
@@ -38,6 +47,9 @@ const HeaderContainer = styled.div`
     background-color: var(--slack-color);
     color: white;
 `
+const MenuIcon = styled(ListOutlinedIcon)`
+    cursor: pointer;
+`
 
 const HeaderLeft = styled.div`
     flex: 0.3;
@@ -58,6 +70,10 @@ const HeaderAvatar = styled(Avatar)`
     }
 `
 const HeaderSearch = styled.div`
+    @media (max-width: 500px) {
+        padding: 0;
+    }
+
     flex: 0.4;
     opacity: 1;
     border-radius: 6px;
